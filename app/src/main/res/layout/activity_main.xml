@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.dome.mvvm.vo.User" />
+
+        <import type="com.dome.mvvm.vo.Status" />
+
+
+        <variable
+            name="eventHandler"
+            type="com.dome.mvvm.ui.MainEventHandler" />
+
+        <variable
+            name="user"
+            type="com.dome.mvvm.vo.User" />
+
+        <variable
+            name="loadStatus"
+            type="com.dome.mvvm.vo.Status" />
+
+        <variable
+            name="resource"
+            type="com.dome.mvvm.vo.Resource" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        tools:context="com.dome.mvvm.ui.MainActivity">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:lines="1"
+            app:onInputFinish="@{(text)->eventHandler.onInputFinish(text)}" />
+
+
+        <LinearLayout
+            visibleGone="@{loadStatus==Status.SUCCESS}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:imgUrl="@{user.avatarUrl}"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/format_name(user.name)}"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/format_repo(user.repoNumber)}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/format_time(user.lastUpdate)}" />
+
+
+        </LinearLayout>
+
+        <TextView
+            visibleGone="@{loadStatus==Status.ERROR}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{resource.message}"
+            />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            visibleGone="@{loadStatus==Status.LOADING}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </LinearLayout>
+</layout>
