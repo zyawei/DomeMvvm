@@ -9,8 +9,8 @@ import static com.dome.mvvm.vo.Status.SUCCESS;
 
 
 /**
- * A generic class that holds a value with its loading status.
- * @param <T>
+ * 暴露网络请求状态的辅助类
+ * 所有属性都是final
  */
 public class Resource<T> {
 
@@ -23,7 +23,7 @@ public class Resource<T> {
     @Nullable
     public final T data;
 
-    public Resource(@NonNull Status status, @Nullable T data, @Nullable String message) {
+    private Resource(@NonNull Status status, @Nullable T data, @Nullable String message) {
         this.status = status;
         this.data = data;
         this.message = message;

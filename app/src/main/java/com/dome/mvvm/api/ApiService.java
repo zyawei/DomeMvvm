@@ -12,6 +12,9 @@ import retrofit2.http.Path;
  * REST API access points
  */
 public interface ApiService {
+    /**
+     * 简单点的写法
+     */
     ApiService INSTANCE = new Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())

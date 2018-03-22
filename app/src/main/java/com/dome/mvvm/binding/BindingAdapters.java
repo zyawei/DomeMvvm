@@ -17,14 +17,17 @@ import com.bumptech.glide.Glide;
  */
 
 public class BindingAdapters {
+
     @BindingAdapter("visibleGone")
     public static void showHide(View view, boolean show) {
         view.setVisibility(show ? View.VISIBLE : View.GONE);
     }
+
     @BindingAdapter("imgUrl")
     public static void imgUrl(ImageView view, final String url) {
         Glide.with(view.getContext()).load(url).into(view);
     }
+
     @BindingAdapter("onInputFinish")
     public static void onInputFinish(TextView view, final OnInputFinish listener) {
         if (listener == null) {

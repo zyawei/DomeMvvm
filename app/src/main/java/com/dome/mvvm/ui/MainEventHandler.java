@@ -16,6 +16,11 @@ public class MainEventHandler {
         this.mainActivity = mainActivity;
     }
 
+    /**
+     *  会根据用户输入回调
+     *  由 ActivityMainDataBinding 调用
+     *  @param text 点击软键盘的提交按钮后获取到的文本
+     */
     public void onTextSubmit(String text) {
         mainActivity.onSearchUser(text);
     }

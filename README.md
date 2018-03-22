@@ -1,46 +1,43 @@
-# Dome View-ViewModel-Model
+# 1、MVVM 模式简介
 
-    blog: http://blog.csdn.net/zzyawei/article/details/79590453
+MVVM 软件设计模式由微软在2005年提出，下图及介绍总结自微软[The MVVM Pattern](https://msdn.microsoft.com/en-us/library/hh848246.aspx)和[Implementing the MVVM Pattern](https://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40).aspx)。上面两篇文章中和微软自家产品关联性很强，并很适用于Android，这里仅仅是介绍MVVM模式的概念及MVVM模式中各模块所承担的职责。
 
-# 1、MVVM模式简介
-
-在MVVM模式中，`View`封装了UI和UI逻辑，`ViewModel`封装了显示逻辑和状态，`Model`封装了业务逻辑和数据。`View`通过数据绑定，命令和注册通知与`ViewModel`交互。`ViewModel`查询，观察和协调`Model`的更新，并且转换和聚合`View`所需的数据。
-
-![这里代码片](//img-blog.csdn.net/20180317104020957)
+<img src="http://img-blog.csdn.net/20180317104020957" >
 
 - **View**
 就像在MVC和MVP模式中一样，视图是用户在屏幕上看到的结构、布局和外观（UI），决定如何呈现数据
 - **ViewModel**
-封装了View的显示逻辑和数据。不直接引用View。ViewModel实现视图的命令（如点击事件），处理（转换/聚合）View所需绑定的数据，并通知View数据或状态的改变。ViewModel和数据和状态提供给View，但View决定了如何呈现。
+封装了View的显示逻辑和数据。不直接引用View。ViewModel实现来自View的命令（如点击事件）、处理（转换/聚合）View所需绑定的数据、通知View数据或状态的改变。ViewModel和数据和状态提供给View，但View决定了如何呈现。
 - **Model**
-封装了业务逻辑和数据，业务逻辑是指所有有关数据检索与处理的程序逻辑，并且保证数据的一致性和有效性。为了最大化重用机会，Model不应包含任何用于特定ViewModel的处理逻辑。
+封装了业务逻辑和数据（业务逻辑是指所有有关数据检索与处理的程序逻辑），并且保证数据的一致性和有效性。为了最大化重用机会，Model不应包含任何用于特定ViewModel的处理逻辑。
 - **Binder 绑定器**
-数据绑定技术的实现在MVVM中是必须的。Binder确保UI在数据在ViewModel中数据发生变化时能够及时通知View，使View呈现最新的数据。在Android中，使用`DataBinding` 能极大简化相同代码的书写。
-
+数据绑定技术的实现在MVVM中是必须的。Binder确保ViewModel中数据发生变化时能够及时通知View，使View呈现最新的数据。
 # 2 、Android MVVM 模式
-MVVM在不同的平台实现方式是由一定差异性的。在Google IO 2017 ，Google发布了一个官方应用架构库[Architecture](https://developer.android.google.cn/topic/libraries/architecture/guide.html)，这个架构库便是Google对MVVM在Android中实现的建议，也被称之为`Android官方应用架构指南`。[Architecture](https://developer.android.google.cn/topic/libraries/architecture/guide.html)中所需要的[Lifecycles](https://developer.android.com/topic/libraries/architecture/lifecycle.html)已经被`API27`默认实现。Architecture这个Library在Google中国开发者网站中能找到，但入口是隐藏的，官方至今没翻译为[中文](http://www.cnblogs.com/zqlxtt/p/6895717.html)。下图是Architecture的整体架构图。
+MVVM在不同的平台实现方式是有一定差异性的。在Google IO 2017 ，Google发布了一个官方应用架构库[Architecture Components](https://developer.android.google.cn/topic/libraries/architecture/guide.html)，这个架构库便是Google对Android应用架构的建议，也被称之为`Android官方应用架构指南`。`Android Architecture Components`在Google中国开发者网站中能找到。和[Data Binding Library](https://developer.android.google.cn/topic/libraries/data-binding/index.html)一样官方还没翻译为[中文](http://www.cnblogs.com/zqlxtt/p/6895717.html)。
 
-![这里写图片描述](//img-blog.csdn.net/2018031711253681)
+下图是Architecture的应用架构图。结合Android程序特点，整体上与微软的MVVM类似，但是做了更细致的模块划分。
+
+![来自Google开发者网站](//img-blog.csdn.net/2018031711253681)
 
 - **View** 
-显而易见 Activity/Fragment 便是MVVM中的View，当收到ViewModel传递来的数据时，Activity/Fragmen负责将数据以你喜欢的方式显示出来。
+显而易见 Activity/Fragment 便是MVVM中的View，当收到ViewModel传递来的数据时，Activity/Fragment负责将数据以你喜欢的方式显示出来。实际是View成还包括ViewDataBinding(根据xml自动生成)，上面中并没有体现。
 
 - **ViewModel**
-ViewModel负责转换和聚合Model中返回的数据，使这些数据易于显示，并把这些数据及时的通知给Activity/Fragment。
+ViewModel作为Activity/Fragment与其他组件的连接器。负责转换和聚合Model中返回的数据，使这些数据易于显示，并把这些数据改变及时的通知给Activity/Fragment。
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html)是具有`生命周期意识`的，当Activity/Fragment销毁时ViewModel的`onClear`方法会被回调，你可以在这里做一些清理工作。
-ViewModel中的数据由[LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html)持有。LiveData是一个`可观察者`的具有`生命周期意识`的数据持有者，只有当Activity/Fragment可见时LiveData才会通知数据的改变，避免无用的刷新UI；
+[LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html)是具有`生命周期意识`的一个`可观察的`的数据持有者，ViewModel中的数据由LiveData持有，并且只有当Activity/Fragment处于活动时才会通知UI数据的改变，避免无用的刷新UI；
 
 - **Model**
-Repository及其下方就是Model了。数据可以来自本地数据库[(Room)](https://developer.android.com/topic/libraries/architecture/room.html)，也可以来自网络，但是经过Repository，数据就变成单一数据源，单一数据源也就是可信数据源。
+Repository及其下方就是Model了。Repository负责提取和处理数据。数据可以来自本地数据库[(Room)](https://developer.android.com/topic/libraries/architecture/room.html)，也可以来自网络，这些数据统一有Repository处理，对应隐藏数据来源及获取方式
 - **Binder 绑定器**
-从上图中，你很难发现绑定器在哪里。其实在任何MVVM的实现中，数据绑定技术都是必须的，而且一般也都是隐藏的。
-Android中的数据绑定技术由 [DataBinding](https://developer.android.com/topic/libraries/data-binding/index.html)实现。当Activity接受到来自ViewModel中的新数据时，将这些数据通过DataBinding绑定到ViewDataBinding中，UI将会自动刷新，而不用书写类似`setText`的方法。
+上图中并没有标出绑定器在哪里，其实在任何MVVM的实现中，数据绑定技术都是必须的。而上图仅仅是应用架构图。
+Android中的数据绑定技术由 [DataBinding](https://developer.android.com/topic/libraries/data-binding/index.html)和[LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html)共同实现。当Activity/Fragment接收到来自ViewModel中的新数据时(由LiveData自动通知数据的改变)，将这些数据通过DataBinding绑定到ViewDataBinding中，UI将会自动刷新，而不用书写类似`setText`的方法。
 
 # 3、Android MVVM 实战
 
-上面都是一些理论，下面开始的写一个MVVM的demo供参考。这个Dome会加入`DataBinding`、`ViewModel`、`LiveData`、`retrofit`并且使用`java8`，并且不准备添加`Dagger2`、`Room`支持。
+上面都是一些理论，下面开始的按照`Android Architecture Components`写一个的MVVM Demo。这个Dome会加入`DataBinding`、`ViewModel`、`LiveData`、`retrofit`并且使用`java8`。不准备添加`Room(数据库)`和`Dagger2(依赖注入)`。
 
-**现在我们来写个Dome**
+**现在我们来写这个Dome**
 
 我们将在这个Dome里面通过Github用户的用户名，来获取具体的用户信息详情。其实Github返回很多，我们这里为了方便只显示用昵称，头像，公开库数量，最后修改时间。
 
@@ -140,7 +137,7 @@ dependencies {
     </LinearLayout>
 </layout>
 ```
-**可以看到View的显示逻辑完全由数据驱动。** Activity只需要把相关的数据对象绑定到xml中，Data Binding 会自动把这些数据绑定到相关的View。
+**可以看到View的显示逻辑完全由数据驱动**。 Activity只需要把相关的数据对象绑定到xml中，Data Binding 会自动把这些数据显示到相关的View。
 
 事实上，Databinding会根据当前xml自动生成一个`ViewDataBinding`的**.java**文件。上面写的有关属性与绑定都会在这个ViewDataBinding中实现。生成的ViewDataBinding在`/app/build/generated/source/apt/debug/*包名*/databinding/`目录下，感兴趣可以看看。如果你对`The mvp`这个框架有了解的话，就会发现它和`DataBinding`的相似处，都是把View的显示逻辑放到Activity之外。接下来我们看MainEventHander.java:
 
@@ -160,12 +157,12 @@ public class MainEventHandler {
     }
 }
 ```
-这个java文件不是必须的。之所以这样写是不想让Activity去处理复杂的点击事件。它就是处理点击事件并回调Activity的的。
+这个java文件并不是必须的，你可以把点击事件直接放到Activity中去。之所以这样写，是不想让Activity去处理复杂的点击事件，简化Activity。
 
 ## MainActivity
 ```java
 public class MainActivity extends AppCompatActivity {
-	//自动生成的ViewDataBinding ，继承自ViewDataBinding
+	//自动生成的ViewDataBinding ，类名是根据xml名称自动生成
     private ActivityMainBinding mainBinding;
     //ViewModel
     private MainViewModel mainViewModel;
@@ -175,15 +172,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // 替换setContentView()
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        // 这里不可以直接new MainViewModel()
+        // 注意：这里不可以直接new MainViewModel()
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-		//设置事件处理
+		//设置事件处理器
         mainBinding.setEventHandler(new MainEventHandler(this));
-		//获取User
+		//获取userLiveData
         LiveData<Resource<User>> userLiveData = mainViewModel.getUser();
-        //观察userLivedata的变化
+        //观察userLivedata中的数据(User)变化
         userLiveData.observe(this, userResource -> {
-			//绑定到DataBinding,set**()根据xml中的<var.. >标签自动生成.
+			//绑定到DataBinding,set**()方法根据xml中的<var.. >标签自动生成.
             mainBinding.setLoadStatus(userResource == null ? null : userResource.status);
             mainBinding.setUser(userResource == null ? null : userResource.data);
             mainBinding.setResource(userResource);
@@ -196,18 +193,15 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-**Activity**没有通过自身去**获取数据**，当数据返回时Activity也没有去**处理数据**，也没有处理简单**显示逻辑**，也没有处理**点击事件**（监听软件盘的输入完成+获取输入文字,在这里已经变成了onSearchUser）。这样Activity就被大大简化，没有动辄几百行的代码。
+**Activity**没有通过自身去**获取数据**，当数据返回时Activity也没有去**处理数据**，也没有处理简单**显示逻辑**，也没有处理**点击事件**（*监听软件盘的输入完成+获取输入文字,在这里已经变成了onSearchUser*）。这样Activity就被大大简化，没有动辄几百行的代码。
 
 > **`Activity的职责是:在数据更改时更新视图，或将用户操作通知给ViewModel`**；
 
 - **为什么不可以new MainViewModel ?**
 
-	前面有说过ViewModel是具有`生命周期意识`的，但这并不是与生俱来的。直接new会让ViewModel的失去对生命周期的感知，上述方式实际上是通过反射生成MainViewModel的对象，然后创建一个没有视图的Fragment添加到Activity，把这个viewModel对象交由Fragment持有，因为Fragment和Activity的生命周期是同步的，所以当Activity销毁时ViewModel的`onClear()`会被回调并且销毁这个ViewModel。
+	前面有说过ViewModel是具有`生命周期意识`的，但这并不是与生俱来的。直接new会让ViewModel的失去对生命周期的感知。
+	上述方式实际上是通过反射生成MainViewModel.class的对象，然后创建一个没有视图的Fragment添加到Activity，把这个viewModel对象交由Fragment持有，因为Fragment和Activity的生命周期是同步的，所以当Activity销毁时ViewModel的`onClear()`会被回调并且销毁这个ViewModel。
 	上述写法使用的是默认的创建工厂(反射方式创建)。我们可以使用自定义的工厂来创建对象，我们可以在工厂里传入参数（一般都需要传参，这个简单而已）。而当我们使用了`依赖注入（如dagger2）`后，就不需要传参了。
-
-- 	**什么是LiveData ?**
-
-	[LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html)是一个可观察的数据持有者。与常规可观察性不同，LiveData具有生命周期感知能力。这种感知使LiveData只更新处于生命周期活动状态（如处于Activity Resume状态）的观察者。
 
 - **为什么userLiveData不用removeObserve ?**
 
@@ -327,8 +321,18 @@ public class BindingAdapters {
 ```
 上面`xml`里面所使用的`app:visibleGone` / `app:imgUrl` / `app:onInputFinish`属性都是这里定义的。前面两个很好理解，如果对`onInputFinish`的参数理解不了，可以了解了`java8 lambda`表达式相关知识。
 
-done !
+# 4、最后
+### Dome 地址
 
+- **Dome Github 地址：**https://github.com/zyawei/DomeMvvm
+- **Dome With Dagger2 :**还没写..
+- **Google Architecture Sample : ** https://github.com/googlesamples/android-architecture-components
 
+### 参考链接:
+- **The MVVM Pattern : ** https://msdn.microsoft.com/en-us/library/hh848246.aspx
 
+- **Implementing The MVVM Pattern : ** https://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40).aspx
 
+- **Android Architecture Components : ** https://developer.android.com/topic/libraries/architecture/index.html
+
+- **Android官方应用架构指南(中文) : **http://www.cnblogs.com/zqlxtt/p/6895717.html

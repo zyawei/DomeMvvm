@@ -28,16 +28,12 @@ public class UserRepo {
         return userRepo;
     }
 
-    private static final String TAG = "UserRepo";
-
     public LiveData<Resource<User>> getUser(String userId) {
-        Log.i(TAG, "getUser: " + userId);
         MutableLiveData<Resource<User>> userEntityLiveData = new MutableLiveData<>();
         userEntityLiveData.postValue(Resource.loading(null));
         ApiService.INSTANCE.getUser(userId).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Log.i(TAG, "onResponse: " + response);
                 ApiResponse<User> apiResponse = new ApiResponse<>(response);
                 if (apiResponse.isSuccessful()) {
                     userEntityLiveData.postValue(Resource.success(response.body()));
