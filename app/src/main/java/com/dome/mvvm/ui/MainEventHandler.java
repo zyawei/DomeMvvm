@@ -16,7 +16,7 @@ public class MainEventHandler {
         this.mainActivity = mainActivity;
     }
 
-    public void onInputFinish(String text) {
-        mainActivity.onInputFinish(text);
+    public void onTextSubmit(String text) {
+        mainActivity.onSearchUser(text);
     }
 }

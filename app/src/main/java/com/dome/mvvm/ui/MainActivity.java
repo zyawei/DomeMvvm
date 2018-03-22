@@ -1,5 +1,6 @@
 package com.dome.mvvm.ui;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -7,7 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.dome.mvvm.R;
 import com.dome.mvvm.databinding.ActivityMainBinding;
-import com.dome.mvvm.vo.Status;
+import com.dome.mvvm.vo.Resource;
+import com.dome.mvvm.vo.User;
 
 /**
  * @author yawei
@@ -24,14 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.setEventHandler(new MainEventHandler(this));
 
-        mainViewModel.getUser().observe(this, userResource -> {
+        LiveData<Resource<User>> user = mainViewModel.getUser();
+        user.observe(this, userResource -> {
             mainBinding.setLoadStatus(userResource == null ? null : userResource.status);
             mainBinding.setUser(userResource == null ? null : userResource.data);
             mainBinding.setResource(userResource);
         });
     }
 
-    void onInputFinish(String text) {
+    void onSearchUser(String text) {
         mainViewModel.setUserName(text);
     }
 }

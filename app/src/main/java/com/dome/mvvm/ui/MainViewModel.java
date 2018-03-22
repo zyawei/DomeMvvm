@@ -39,5 +39,4 @@ public class MainViewModel extends ViewModel {
     public void setUserName(String userName) {
         userNameLiveData.postValue(userName);
     }
-
 }

@@ -2,32 +2,22 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
-
         <import type="android.view.View" />
-
         <import type="com.dome.mvvm.vo.User" />
-
         <import type="com.dome.mvvm.vo.Status" />
-
-
         <variable
             name="eventHandler"
             type="com.dome.mvvm.ui.MainEventHandler" />
-
         <variable
             name="user"
             type="com.dome.mvvm.vo.User" />
-
         <variable
             name="loadStatus"
             type="com.dome.mvvm.vo.Status" />
-
         <variable
             name="resource"
             type="com.dome.mvvm.vo.Resource" />
-
     </data>
 
     <LinearLayout
@@ -43,7 +33,7 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:lines="1"
-            app:onInputFinish="@{(text)->eventHandler.onInputFinish(text)}" />
+            app:onInputFinish="@{(text)->eventHandler.onTextSubmit(text)}" />
 
 
         <LinearLayout

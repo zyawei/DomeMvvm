@@ -44,8 +44,6 @@ public class ApiResponse<T> {
         }
     }
 
-    private static final String TAG = "ApiResponse";
-
     public boolean isSuccessful() {
         return code >= 200 && code < 300;
     }
